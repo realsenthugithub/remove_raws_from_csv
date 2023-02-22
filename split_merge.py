@@ -1,5 +1,5 @@
 # setting python env varisbles
-#!usr/bin/env python3
+#!/usr/bin/env python3
 
 # Importing libraries
 import pandas as pd
