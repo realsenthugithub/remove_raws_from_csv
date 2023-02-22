@@ -9,7 +9,7 @@ import datetime as dt
 dir = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/'
 
 # file location from mongo raw & Mysqlraw
-mysqlraw = dir +'APIIDv1.xlsx'
+mysqlraw = dir +'APIIDv1.csv'
 mongoraw = dir + '17-02-2023_11-45-17_report.csv'
 
 # create empty list
@@ -21,7 +21,7 @@ now = dt.datetime.now()
 
 # read by default 1st sheet of an Excel file   # read by default 2nd sheet of an Excel file
 df1 = pd.read_csv(mongoraw)
-df2 = pd.read_excel(mysqlraw)
+df2 = pd.read_csv(mysqlraw)
 
 # remove special charaters form all colums
 df1['serviceid'] = df1['serviceid'].str.replace('\W', '', regex=True)
@@ -57,12 +57,12 @@ fmongo = dir + 'output_mongo' + str(now) + '.xlsx'
 fmysql = dir + 'output_mysql' + str(now) + '.xlsx'
 
 # save mongo & mysdl to excel
-dfm.to_excel(fmongo)
-dfs.to_excel(fmysql)
+dfm.to_csv(fmongo)
+dfs.to_csv(fmysql)
 
 # read mongo & mysql files
-dfmongo = pd.read_excel(fmongo)
-dfmysql = pd.read_excel(fmysql)
+dfmongo = pd.read_csv(fmongo)
+dfmysql = pd.read_csv(fmysql)
 
 # filter by GW,Username and api name and write guid to Excel sheet
 for s in dfmongo.index:
@@ -73,5 +73,5 @@ for s in dfmongo.index:
 
 # create dataframe from your guidlist
 df = pd.DataFrame(list(guidlist_final), columns=['tenant', 'API Name', 'statuscode', 'count'])
-df.to_excel(dir + 'output_final' + str(now) + '.xlsx')
+df.to_csv(dir + 'output_final' + str(now) + '.csv')
 print(df)
