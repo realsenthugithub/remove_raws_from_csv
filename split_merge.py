@@ -1,22 +1,17 @@
-### setting python env varisbles
+# setting python env varisbles
 #!usr/bin/env python3
 
-#Importing libraries
+# Importing libraries
 import pandas as pd
 import datetime as dt
-import numpy as np
 
-#file location from mongo raw & Mysqlraw
-mysqlraw = '/Users/jd/Downloads/APIIDv1.xlsx'
-mongoraw = '/Users/jd/Downloads/17-02-2023_11-45-17_report.csv'
-
-#file location from sql & mongo
-#mysqloutput='/Users/jd/Downloads/sql.csv'
-#mongooutput='/Users/jd/Downloads/mongo.csv'
+# file location from mongo raw & Mysqlraw
+mysqlraw = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/APIIDv1.xlsx'
+mongoraw = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/17-02-2023_11-45-17_report.csv'
 
 # create empty list
 guidlist_mysqlraw = []
-guidlist = []
+guidlist_final = []
 
 # get the current date and time
 now = dt.datetime.now()
@@ -30,7 +25,6 @@ df1['serviceid'] = df1['serviceid'].str.replace('\W', '', regex=True)
 df1['tenant'] = df1['tenant'].str.replace('\W', '', regex=True)
 df1['statuscode'] = df1['statuscode'].str.replace('\W', '', regex=True)
 
-
 # remove starting characters from a columns
 df1['tenant'] = df1['tenant'].str[15:]
 df1['statuscode'] = df1['statuscode'].str[10:]
@@ -41,8 +35,7 @@ df1[['count', 'svcid']] = df1["serviceid"].apply(lambda x: pd.Series(str(x).spli
 # drop a column
 dfm = df1.drop(columns=['serviceid'])
 
-
-#Defining searching
+# Defining searching
 searchkey = 'NULL'
 
 # filter by GW,Username and api name and write guid to Excel sheet
@@ -56,24 +49,26 @@ dfs = pd.DataFrame(list(guidlist_mysqlraw), columns=['APIID', 'NAME', 'DESCRIPTI
 # Drop empty raws from so
 dfs.dropna(subset=['PRODSVC'], inplace=True)
 
-#print(dfs)
+# file name to save mongo & mysql
+fmongo = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_mongo' + str(now) + '.xlsx'
+fmysql = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_mysql' + str(now) + '.xlsx'
+
+# save mongo & mysdl to excel
+dfm.to_excel(fmongo)
+dfs.to_excel(fmysql)
+
+# read mongo & mysql files
+dfmongo = pd.read_excel(fmongo)
+dfmysql = pd.read_excel(fmysql)
 
 # filter by GW,Username and api name and write guid to Excel sheet
-for s in dfm.index:
-    for j in dfs.index:
-       if dfm['svcid'][s] == dfs['PRODSVC'][j]:
-            guidlist.append([dfm['tenant'][s], dfs['NAME'][j], dfm['statuscode'][s], dfm['count'][s]])
-            break
+for s in dfmongo.index:
+    for j in dfmysql.index:
+       if dfmongo['svcid'][s] == dfmysql['PRODSVC'][j]:
+           guidlist_final.append([dfmongo['tenant'][s], dfmysql['NAME'][j], dfmongo['statuscode'][s], dfmongo['count'][s]])
+           break
 
 # create dataframe from your guidlist
-df = pd.DataFrame(list(guidlist), columns=['tenant', 'API Name', 'statuscode', 'count'])
-
-
-# get your desired output
-df.to_csv('/Users/jd/Downloads/' + str(now) + '.csv')
+df = pd.DataFrame(list(guidlist_final), columns=['tenant', 'API Name', 'statuscode', 'count'])
+df.to_excel('/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_final' + str(now) + '.xlsx')
 print(df)
-
-
-# get your desired output
-#dfs.to_excel('/Users/jd/Downloads/APIOUTPUTLIST' + str(now) + '.xlsx')
-#print(dfs)
