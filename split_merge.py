@@ -5,9 +5,12 @@
 import pandas as pd
 import datetime as dt
 
+# directory
+dir = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/'
+
 # file location from mongo raw & Mysqlraw
-mysqlraw = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/APIIDv1.xlsx'
-mongoraw = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/17-02-2023_11-45-17_report.csv'
+mysqlraw = dir +'APIIDv1.xlsx'
+mongoraw = dir + '17-02-2023_11-45-17_report.csv'
 
 # create empty list
 guidlist_mysqlraw = []
@@ -50,8 +53,8 @@ dfs = pd.DataFrame(list(guidlist_mysqlraw), columns=['APIID', 'NAME', 'DESCRIPTI
 dfs.dropna(subset=['PRODSVC'], inplace=True)
 
 # file name to save mongo & mysql
-fmongo = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_mongo' + str(now) + '.xlsx'
-fmysql = '/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_mysql' + str(now) + '.xlsx'
+fmongo = dir + 'output_mongo' + str(now) + '.xlsx'
+fmysql = dir + 'output_mysql' + str(now) + '.xlsx'
 
 # save mongo & mysdl to excel
 dfm.to_excel(fmongo)
@@ -70,5 +73,5 @@ for s in dfmongo.index:
 
 # create dataframe from your guidlist
 df = pd.DataFrame(list(guidlist_final), columns=['tenant', 'API Name', 'statuscode', 'count'])
-df.to_excel('/Users/senthu/OneDrive - GovTech/Desktop/Mongo Export Task/output_final' + str(now) + '.xlsx')
+df.to_excel(dir + 'output_final' + str(now) + '.xlsx')
 print(df)
